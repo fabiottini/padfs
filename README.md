@@ -98,13 +98,9 @@ PADFS is partition tolerant, it continues to operate also in highly unreliable n
 In order to grant the consistency model, it does not provide a 100% availability.
 From a client perspective, the main operations on PADFS are uploading and downloading files and these are the requirements for their availability:
 
-    * Upload
+* Upload: The upload operation is available if the client is in the network-subset that contains the majority (at least 50%+1) of PADFS-nodes that are involved in the execution of the consensus problem for this operation.
 
-      The upload operation is available if the client is in the network-subset that contains the majority (at least 50%+1) of PADFS-nodes that are involved in the execution of the consensus problem for this operation.
-
-    * Download
-
-      The download operation is available if the client is in a network-subset in which there is at least one available PADFS-node that manages the file and at least one available PADFS-node that manage the metadata of that file.
+* Download: The download operation is available if the client is in a network-subset in which there is at least one available PADFS-node that manages the file and at least one available PADFS-node that manage the metadata of that file.
 
 Load balance
 ======

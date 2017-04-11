@@ -96,7 +96,7 @@ It is structured as the following:
 
     * password: the xml element including all PADFS passwords
 
-        * server: the shared password used for communication between PADFS-nodes
+        * server: the shared password used for communication between PADFS-nodes. It must be the same in all the configuration files.
 
         * controlPanel: the password used to access the control panel
 

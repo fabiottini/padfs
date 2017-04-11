@@ -1,18 +1,18 @@
 [workflow]: img/workflow.png "padfs workflow"
 [database]: img/databaseSchema.png "padfs database"
 
-[authors]: padfs#authors
-[introduction]: padfs#introduction
-[build]: padfs#build-and-run-project
-[configurationFile]: padfs#configuration-file
-[accessUtiliziation]: padfs#access-and-utilization-of-the-web-interface
-[workflow]: padfs#workflow
-[projectStructure]: padfs#project-structure
-[consistencyModel]: padfs#consistency-model
-[dataReplication]: padfs#data-replication
-[availability]: padfs#availability-and-partition-tolerance
-[loadBalance]: padfs#load-balance
-[database]: padfs#database-structure
+[authors]: #authors
+[introduction]: #introduction
+[build]: #build-and-run-project
+[configurationFile]: #configuration-file
+[accessUtiliziation]: #access-and-utilization-of-the-web-interface
+[workflow]: #workflow
+[projectStructure]: #project-structure
+[consistencyModel]: #consistency-model
+[dataReplication]: #data-replication
+[availability]: #availability-and-partition-tolerance
+[loadBalance]: #load-balance
+[database]: #database-structure
 
 
 Index

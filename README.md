@@ -1,8 +1,38 @@
 [workflow]: img/workflow.png "padfs workflow"
 [database]: img/databaseSchema.png "padfs database"
 
+[authors]: padfs#authors
+[introduction]: padfs#introduction
+[build]: padfs#build-and-run-project
+[configurationFile]: padfs#configuration-file
+[accessUtiliziation]: padfs#access-and-utilization-of-the-web-interface
+[workflow]: padfs#workflow
+[projectStructure]: padfs#project-structure
+[consistencyModel]: padfs#consistency-model
+[dataReplication]: padfs#data-replication
+[availability]: padfs#availability-and-partition-tolerance
+[loadBalance]: padfs#load-balance
+[database]: padfs#database-structure
+
+
+Index
+======
+1. [Authors][authors]
+2. [Introduction][introduction]
+3. [Build and run][build]
+4. [Configuration file][configurationFile]
+5. [Access and utilization of the web interface][accessUtiliziation]
+6. [Workflow][workflow]
+7. [Project structure][projectStructure]
+8. [Consistency model][consistencyModel]
+9. [Data replication][dataReplication]
+10. [Availability and Partition tolerance][availability]
+11. [Load balance][loadBalance]
+12. [Database structure][database]
+
 Authors
 ======
+
 * Fabio Lucattini
 * Matteo Mazza
 
@@ -12,6 +42,91 @@ Introduction
 PADFS is a distributed, multi-tenant, persistent, hierarchical file system.
 The user’s files stored in the file system can be organized in a hierarchical way through directories. Moreover the users can share their folders and files with one or more users specifying, for each user, a particular permission.
 The service is exposed to the users as a REST web service and through a web interface.
+
+Build and run project
+======
+```
+1. mvn package
+2. java -jar padfs-0.1-developer.jar config.xml
+```
+
+Configuration file
+======
+The configuration file is an xml file named “config.xml” stored in the same directory of PADS jar.
+
+It is structured as the following:
+
+* configuration: the xml element including all the PADFS configuration
+
+    * server: the xml element including the information to describe the PADFS instance
+
+        * id: the unique id of this instance of PADFS-node. If missing, PADFS will generate an unique id available in the system.
+
+        * ip: the ip address of the REST interface. it can be '\*' to include all the available ip addresses
+
+        * port: the port of the REST interface
+
+        * protocol: one of “http”, “https”. It is the protocol that this PADFS-node will use for each its REST interaction.
+
+        * fileCertPath: the path of the spring keyStore file. Mandatory only if the protocol choosen is “https”
+
+        * fileCertPassword: the path of the spring keyStore password file. Mandatory only if the protocol choosen is “https”
+
+    * system: the xml element including parameters that change the behaviour of the PADFS-node. Most of them are optional.
+
+        * retryNumber: in case of failure, the number of trials for each REST request that the PADFS-node does. default: 3
+
+        * waitMillisecondsBeforeRetry: the number of milliseconds that the PADFS-node will wait in case of failure in a REST request before it will retry it. default: 1000
+
+        * sleepTime_CheckReplicasAlive: the number of milliseconds that the FileManager waits between 2 consecutive check of available replicas. default:60000
+
+        * waitBeforeSynch: after having noticed that this PADFS-node is out of synch, the PADFS-node will wait for ‘waitBeforeSynch’ milliseconds before start a synchronization. This is done to avoid unneeded synchronizations due to network delay or temporary overloading of the PADFS-node that has buffered messages not yet consumed. default: 3000
+
+        * waitMillisecondsHeartBeat: the sleeping time between 2 consecutive HeartBit routines. default: 30000
+
+    * log: the xml element including the classic log parameters
+
+        * path: the path where to store the log file
+
+        * overwrite: a boolean parameter. If true, the log file will be overwritten at each instantiation of PADFS. If false, a rotation mechanism is implemented
+
+        * level: the level of logging. It can be one of the following: ERROR; WARNING; INFO; DEBUG; TRACE
+
+        * colouredOutput: an optional boolean parameter that indicates if the console output must be black and white or coloured. default: false
+
+    * password: the xml element including all PADFS passwords
+
+        * server: the shared password used for communication between PADFS-nodes
+
+        * controlPanel: the password used to access the control panel
+
+    * fileSystem: the xml element including the parameters needed to determine where PADFS will store its files
+
+        * path: the path where PADFS will store the permanent data of the users
+
+        * TMPPath: the path of the temporary directory of PADFS
+
+    * serverList: the xml element containing a list of configuration/serverList/server elements. These elements describe the REST endpoints of other PADFS-nodes.
+
+        If PADFS is not booted yet, at least one PADFS-node must have at least 2 endpoint setted. Otherwise if PADFS is already booted, it is sufficient to include only the endpoint of one PADFS-node already accepted in the PADFS net.
+
+        * server: the xml element describing the REST endpoint of one PADFS node
+
+            * ip
+            * port
+
+Access and utilization of the web interface
+======
+
+PADFS is very simple and intuitive to use thanks to the web interface both for users and the administrator. The web interface provides a simple and basic user interface for the PADFS REST api that can be exploited to create more powerfull tools and complex interfaces.
+
+When at least 3 PADFS-nodes are connected and ready, the operations in the web page are unlocked and the PADFS-nodes are capable to receive the user’s files to be uploaded.
+To reach web interface we give two entry point: the users interface and the administrator interface:
+
+* **Users interface**: ``` http://<server-ip>:<port> ```
+* **Administrator interface**: ``` http://<server-ip>:<port>/management ```
+
+After the first boot of PADFS, only one user is present in the client interface, with username admin and password admin by default, if not differently specified in the configuration file.
 
 Workflow
 ======
@@ -113,13 +228,5 @@ Database structure
 
 PADFS utilizes a database, together to the local file system, to store all the data and metadata necessary to maintain the client files and the PADFS status.
 The data is partially shared with all the PADFS-nodes.
-The tables in the db are:
-    * users
-    * servers
-    * filesManaged
-    * directoryListing
-    * filesHosted
-    * tmpFiles
-    * consensusGroups
 
 ![padfs project database][database]

@@ -23,62 +23,62 @@ Project structure
 The project is organized in 4 main packages:
 1. **padfsThreads**
 
- * Padfs: Responsible of booting the system.
+     * Padfs: Responsible of booting the system.
 
- * HeartBit: It monitor the PADFS network to maintain an updated network status.
+     * HeartBit: It monitor the PADFS network to maintain an updated network status.
 
- * Shutdown: It intercept the system interrupt to gracefully shutdown the node.
+     * Shutdown: It intercept the system interrupt to gracefully shutdown the node.
 
- * GarbageCollector: It monitors the PADFS local data and remove the no more required data.
+     * GarbageCollector: It monitors the PADFS local data and remove the no more required data.
 
- * Rest Interface: The Rest Interface component lets the interaction from the outside with the PADFS-node. It implements a server listening for incoming rest-messages.
+     * Rest Interface: The Rest Interface component lets the interaction from the outside with the PADFS-node. It implements a server listening for incoming rest-messages.
 
- * PrepareOp: The PrepareOp component continuously reads job-operations from the queue, execute some preliminary steps and finally send forward the job-operation.
+     * PrepareOp: The PrepareOp component continuously reads job-operations from the queue, execute some preliminary steps and finally send forward the job-operation.
 
- * Consensus: The consensus component continuously reads initialized job-operations through green socket and it tries to reach an agreement between other PADFS-nodes to finalize them. Moreover it continuously reads consensus-messages through red socket to complete the consensus algorithm and to receive agreed job-operations to be finalized.
+     * Consensus: The consensus component continuously reads initialized job-operations through green socket and it tries to reach an agreement between other PADFS-nodes to finalize them. Moreover it continuously reads consensus-messages through red socket to complete the consensus algorithm and to receive agreed job-operations to be finalized.
 
- * CompleteOp: The CompleteOp component continuously read job-operations through yellow socket and executes their final steps.
+     * CompleteOp: The CompleteOp component continuously read job-operations through yellow socket and executes their final steps.
 
- * Garbage Collector: The Garbage Collector component periodically scans the local file-system to discover no more needed data that can be deleted.
+     * Garbage Collector: The Garbage Collector component periodically scans the local file-system to discover no more needed data that can be deleted.
 
- * Heartbit: The Heartbit component periodically queries other PADFS-nodes to maintain updated the network status.
+     * Heartbit: The Heartbit component periodically queries other PADFS-nodes to maintain updated the network status.
 
- * File Manager: The File Manager component periodically scans the PADFS-nodes to check and to maintain available the replicas of the data managed by its PADFS-node.
+     * File Manager: The File Manager component periodically scans the PADFS-nodes to check and to maintain available the replicas of the data managed by its PADFS-node.
 
- * FileManager: It monitors the PADFS network to guarantee the replication of the user data.
+     * FileManager: It monitors the PADFS network to guarantee the replication of the user data.
 
- * Consensus: It communicates with the other PADFS-nodes to agree on the proposed operations.
+     * Consensus: It communicates with the other PADFS-nodes to agree on the proposed operations.
 
- * CompleteOp: It executes the finalization phases of all operations.
+     * CompleteOp: It executes the finalization phases of all operations.
 
- * PrepareOp: It executes the initialization phases of all operations.
+     * PrepareOp: It executes the initialization phases of all operations.
 
 2. **jobManagement**: This package contains the classes representing PADFS operations. At the arrival of a message from the net, the rest interface create one or more instances of this classes.
 These classes can be classified into 2 sub-packages:
- * consensus: The classes instances of this package are created in the RestInterface component and reach the Consensus component through red sockets described in the workflow paragraph.
- The jobManagement.consensus instances are:
-    * Prepare: Manage the receive of Prepare messages and send the Reply messages to the server that has started the new consensus request.
-    * Propose: Manage the receive of Propose messages.
-    * Accept: Manage the receive of Accept messages.
+     * consensus: The classes instances of this package are created in the RestInterface component and reach the Consensus component through red sockets described in the workflow paragraph.
+     The jobManagement.consensus instances are:
+        * Prepare: Manage the receive of Prepare messages and send the Reply messages to the server that has started the new consensus request.
+        * Propose: Manage the receive of Propose messages.
+        * Accept: Manage the receive of Accept messages.
 
- * jobOperation: The classes instances of this package are created in the RestInterface component and reach the PrepareOp component through the blue sockets described in the workflow paragraph. The PrepareOp thread, for each jobOperation read, computes the preliminary operations defined by the jobOperation itself and forwards it to the Consensus component. The Consensus thread transmits the operation to all the involved PADFS-nodes in a jobManagement.consensus.Prepare object and it agrees on the execution of the jobOperation. Then the jobOperation reaches the CompleteOp component and its execution can be completed.
- The jobOperations are subdivided in 3 sub-packages:
-    * clientOp: It contains all the operations that a client can request.
-    * manageOp: It contains all the internal operations used to maintain the integrity of the PADFS-node.
-    * serverOp: It contains all the operations that a PADFS-node can request to other PADFS-nodes.
+     * jobOperation: The classes instances of this package are created in the RestInterface component and reach the PrepareOp component through the blue sockets described in the workflow paragraph. The PrepareOp thread, for each jobOperation read, computes the preliminary operations defined by the jobOperation itself and forwards it to the Consensus component. The Consensus thread transmits the operation to all the involved PADFS-nodes in a jobManagement.consensus.Prepare object and it agrees on the execution of the jobOperation. Then the jobOperation reaches the CompleteOp component and its execution can be completed.
+     The jobOperations are subdivided in 3 sub-packages:
+        * clientOp: It contains all the operations that a client can request.
+        * manageOp: It contains all the internal operations used to maintain the integrity of the PADFS-node.
+        * serverOp: It contains all the operations that a PADFS-node can request to other PADFS-nodes.
 
 3. **system**: This package contains the classes utilized to define components that are used by other packages:
-  * consensus: it maintains the status variables necessary to the consensus component.
-  * containers: it defines the internal data structure utilized in the system. For instance User.java contains all the information needed to define a user like username and password.
-  * logger: it implements the logging system.
-  * managementOp: it includes all the system routines necessary to maintain the PADFS shared status.
-  * managers: it implements all the interfaces that the system use to interact with external component like DBMS, local file system and configuration file.
-  * merkeTree: it contains the metadata contained in the distributed file system.
+    * consensus: it maintains the status variables necessary to the consensus component.
+    * containers: it defines the internal data structure utilized in the system. For instance User.java contains all the information needed to define a user like username and password.
+    * logger: it implements the logging system.
+    * managementOp: it includes all the system routines necessary to maintain the PADFS shared status.
+    * managers: it implements all the interfaces that the system use to interact with external component like DBMS, local file system and configuration file.
+    * merkeTree: it contains the metadata contained in the distributed file system.
 
 4. **restInterface**: This package contains the classes that defines the rest interface. It includes the wrappers needed to represent JSON network messages as java objects. They are subdivided in the sub-packages:
-  * consensus
-  * manageOp
-  * op
+    * consensus
+    * manageOp
+    * op
 
 
 Consistency model
@@ -98,13 +98,13 @@ PADFS is partition tolerant, it continues to operate also in highly unreliable n
 In order to grant the consistency model, it does not provide a 100% availability.
 From a client perspective, the main operations on PADFS are uploading and downloading files and these are the requirements for their availability:
 
-* Upload
+    * Upload
 
-  The upload operation is available if the client is in the network-subset that contains the majority (at least 50%+1) of PADFS-nodes that are involved in the execution of the consensus problem for this operation.
+      The upload operation is available if the client is in the network-subset that contains the majority (at least 50%+1) of PADFS-nodes that are involved in the execution of the consensus problem for this operation.
 
-* Download
+    * Download
 
-  The download operation is available if the client is in a network-subset in which there is at least one available PADFS-node that manages the file and at least one available PADFS-node that manage the metadata of that file.
+      The download operation is available if the client is in a network-subset in which there is at least one available PADFS-node that manages the file and at least one available PADFS-node that manage the metadata of that file.
 
 Load balance
 ======
@@ -118,12 +118,12 @@ Database structure
 PADFS utilizes a database, together to the local file system, to store all the data and metadata necessary to maintain the client files and the PADFS status.
 The data is partially shared with all the PADFS-nodes.
 The tables in the db are:
-* users
-* servers
-* filesManaged
-* directoryListing
-* filesHosted
-* tmpFiles
-* consensusGroups
+    * users
+    * servers
+    * filesManaged
+    * directoryListing
+    * filesHosted
+    * tmpFiles
+    * consensusGroups
 
 ![padfs project database][database]

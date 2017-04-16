@@ -543,7 +543,7 @@ public class SystemEnvironment {
 		public static final String localhost = "localhost";
 		public static final long sleepTime_CheckReplicasAliveDefault = 1*60*1000;//milliseconds
 		public static final String waitMillisecondsBeforeRetry = "1000";
-		public static final Integer waitMillisecondsHeartBeat = 30000;
+		public static final Integer waitMillisecondsHeartbeat = 30000;
 		public static final Long maxTimeMantainUploadingFlag = 15*60*1000L; // 15 minutes
 
 		public static final int maxRetryNumber = 10;
@@ -662,7 +662,7 @@ public class SystemEnvironment {
 		private static List<Server> serverList;
 			
 		private static Integer waitMillisecondsBeforeRetry = null; 
-		private static Integer waitMillisecondsHeartBeat   = null; 
+		private static Integer waitMillisecondsHeartbeat   = null; 
 		private static Long    maxTimeMantainUploadingFlag   = null;
 
 		private static Integer retryNumber = null;
@@ -1017,8 +1017,8 @@ public class SystemEnvironment {
 			return waitMillisecondsBeforeRetry;
 		}
 
-		public static int getWaitMillisecondsHeartBeat() {
-			return waitMillisecondsHeartBeat;
+		public static int getWaitMillisecondsHeartbeat() {
+			return waitMillisecondsHeartbeat;
 		}
 		
 		public static synchronized boolean isNetworkUp(){
@@ -1291,9 +1291,9 @@ public class SystemEnvironment {
 		}
 		
 
-		public static boolean setWaitMillisecondsHeartBeat(int waitMillisecondsHeartBeat) {
-			if(Variables.waitMillisecondsHeartBeat == null){
-				Variables.waitMillisecondsHeartBeat = waitMillisecondsHeartBeat;
+		public static boolean setWaitMillisecondsHeartbeat(int waitMillisecondsHeartbeat) {
+			if(Variables.waitMillisecondsHeartbeat == null){
+				Variables.waitMillisecondsHeartbeat = waitMillisecondsHeartbeat;
 				return true;
 			}
 			return false;

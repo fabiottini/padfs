@@ -109,9 +109,9 @@ public class Padfs {
 		CompleteOp co = new CompleteOp( outConsOp );
 		co.setName("CompleteOp");
 		
-		system.logger.PadFsLogger.log(LogLevel.DEBUG, "- HEARTBIT TH");
-		HeartBit hb = new HeartBit();
-		hb.setName("HeartBit");
+		system.logger.PadFsLogger.log(LogLevel.DEBUG, "- HEARTBEAT TH");
+		Heartbeat hb = new Heartbeat();
+		hb.setName("Heartbeat");
 		
 		
 		system.logger.PadFsLogger.log(LogLevel.DEBUG, "- FileManager TH");

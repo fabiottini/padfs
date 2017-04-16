@@ -777,7 +777,7 @@ private boolean updateMetaInfo(Server server, long myLabelStart, long myLabelEnd
 				
 				PadFsLogger.log(LogLevel.DEBUG, "[SYNCH GLOBAL] trial number "+ trial,"black","white",true);
 	
-				/* retrieve each time the (possible) new activeServerLit ( HeartBit updates it continuously ) */			
+				/* retrieve each time the (possible) new activeServerLit ( Heartbeat updates it continuously ) */			
 				List<Server> l  = SqlManager.getReadyServerList(true);
 				PadFsLogger.log(LogLevel.DEBUG, "[SYNCH GLOBAL] number of possible servers FOR SYNCH: "+l.size(),"black","white",true);
 	

@@ -11,9 +11,9 @@ import system.logger.PadFsLogger.LogLevel;
 import system.managementOp.SynchGlobal;
 import system.managers.SqlManager;
 
-public class HeartBit extends StoppableThread{
+public class Heartbeat extends StoppableThread{
 
-	public HeartBit(){
+	public Heartbeat(){
 		super();
 	}
 	
@@ -27,11 +27,11 @@ public class HeartBit extends StoppableThread{
 			serverList= SqlManager.getServerList();
 			
 			if(serverList == null){
-				PadFsLogger.log(LogLevel.ERROR, "HEARTBIT NULL SERVER LIST THREAD SLEEP: "+Variables.getWaitMillisecondsHeartBeat()+" BEFORE RETRY");
+				PadFsLogger.log(LogLevel.ERROR, "HEARTBEAT NULL SERVER LIST THREAD SLEEP: "+Variables.getWaitMillisecondsHeartbeat()+" BEFORE RETRY");
 				try {
-					Thread.sleep(Variables.getWaitMillisecondsHeartBeat());
+					Thread.sleep(Variables.getWaitMillisecondsHeartbeat());
 				} catch (InterruptedException e) {
-					PadFsLogger.log(LogLevel.ERROR, "HEARTBIT NULL SERVER LIST - WAIT BEFORE RETRY ERROR - "+e.getMessage());
+					PadFsLogger.log(LogLevel.ERROR, "HEARTBEAT NULL SERVER LIST - WAIT BEFORE RETRY ERROR - "+e.getMessage());
 				}
 			}else{
 				for (Server s : serverList) {
@@ -58,18 +58,18 @@ public class HeartBit extends StoppableThread{
 				
 			
 			if(Variables.getNeedToGlobalSync() && getExitingRequested()==false){
-				PadFsLogger.log(LogLevel.DEBUG, "HeartBit start globalConsensusSync");
+				PadFsLogger.log(LogLevel.DEBUG, "Heartbeat start globalConsensusSync");
 				SynchGlobal.delayedGlobalSynch();
 			}
 			
 			
 			//sleep for the given amount of time or until a requestToStop call will arrive 
-			PadFsLogger.log(LogLevel.DEBUG, "HEARTBIT SLEEP FOR: "+Variables.getWaitMillisecondsHeartBeat()+"ms BEFORE RECHECK");
-			waitFor(Variables.getWaitMillisecondsHeartBeat());
+			PadFsLogger.log(LogLevel.DEBUG, "HEARTBEAT SLEEP FOR: "+Variables.getWaitMillisecondsHeartbeat()+"ms BEFORE RECHECK");
+			waitFor(Variables.getWaitMillisecondsHeartbeat());
 
 	
 		}
-		PadFsLogger.log(LogLevel.INFO, "HeartBit shutdown"); 
+		PadFsLogger.log(LogLevel.INFO, "Heartbeat shutdown"); 
 		signalStopCompleted();
 	}
 }

@@ -142,11 +142,11 @@ public class ConfigurationManager {
 		}
 
 		// Read Wait Milliseconds Heart Beat
-		String TMP_waitMillisecondsHeartBeat = x.readXML("/configuration/system/waitMillisecondsHeartBeat");
-		Integer TMP2_waitMillisecondsHeartBeat; 
-		TMP2_waitMillisecondsHeartBeat = (TMP_waitMillisecondsHeartBeat == null || TMP_waitMillisecondsHeartBeat.equals(""))?Constants.waitMillisecondsHeartBeat:Integer.parseInt(TMP_waitMillisecondsHeartBeat);
-		if( !Variables.setWaitMillisecondsHeartBeat(TMP2_waitMillisecondsHeartBeat) ){
-			PadFsLogger.log(LogLevel.WARNING, "setWaitMillisecondsBeforeRetry FAILED: '"+TMP_waitMillisecondsHeartBeat+"'");
+		String TMP_waitMillisecondsHeartbeat = x.readXML("/configuration/system/waitMillisecondsHeartBeat");
+		Integer TMP2_waitMillisecondsHeartbeat; 
+		TMP2_waitMillisecondsHeartbeat = (TMP_waitMillisecondsHeartbeat == null || TMP_waitMillisecondsHeartbeat.equals(""))?Constants.waitMillisecondsHeartbeat:Integer.parseInt(TMP_waitMillisecondsHeartbeat);
+		if( !Variables.setWaitMillisecondsHeartbeat(TMP2_waitMillisecondsHeartbeat) ){
+			PadFsLogger.log(LogLevel.WARNING, "setWaitMillisecondsBeforeRetry FAILED: '"+TMP_waitMillisecondsHeartbeat+"'");
 			//return false; optional parameter: do not return false
 		}
 		

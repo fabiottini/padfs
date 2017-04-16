@@ -104,7 +104,7 @@ public class SynchronizationCompleted extends JobServerOp{
 				PadFsLogger.log(LogLevel.INFO, "need a global synchronization");
 				/*
 				 * the thread completeOp cannot start a synchronization due to an eventual deadlock.
-				 * Thus, let the heartbit thread do it signaling him.
+				 * Thus, let the heartbeat thread do it signaling him.
 				 */
 				
 				Variables.setNeedToGlobalSync(true);

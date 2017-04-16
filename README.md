@@ -82,7 +82,7 @@ It is structured as the following:
 
         * waitBeforeSynch: after having noticed that this PADFS-node is out of synch, the PADFS-node will wait for ‘waitBeforeSynch’ milliseconds before start a synchronization. This is done to avoid unneeded synchronizations due to network delay or temporary overloading of the PADFS-node that has buffered messages not yet consumed. default: 3000
 
-        * waitMillisecondsHeartBeat: the sleeping time between 2 consecutive HeartBit routines. default: 30000
+        * waitMillisecondsHeartbeat: the sleeping time between 2 consecutive Heartbeat routines. default: 30000
 
     * log: the xml element including the classic log parameters
 
@@ -140,7 +140,7 @@ The project is organized in 4 main packages:
 
      * Padfs: Responsible of booting the system.
 
-     * HeartBit: It monitor the PADFS network to maintain an updated network status.
+     * Heartbeat: It monitor the PADFS network to maintain an updated network status.
 
      * Shutdown: It intercept the system interrupt to gracefully shutdown the node.
 
@@ -156,7 +156,7 @@ The project is organized in 4 main packages:
 
      * Garbage Collector: The Garbage Collector component periodically scans the local file-system to discover no more needed data that can be deleted.
 
-     * Heartbit: The Heartbit component periodically queries other PADFS-nodes to maintain updated the network status.
+     * Heartbeat: The Heartbeat component periodically queries other PADFS-nodes to maintain updated the network status.
 
      * File Manager: The File Manager component periodically scans the PADFS-nodes to check and to maintain available the replicas of the data managed by its PADFS-node.
 

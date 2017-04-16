@@ -1397,7 +1397,7 @@ public class RestPadfsController {
 
 		/*
 		 * set the caller server in synching state
-		 * it is not necessary to broadcast this information to the network. HeartBit does it for us
+		 * it is not necessary to broadcast this information to the network. Heartbeat does it for us
 		 */
 
 		boolean res = SqlManager.updateServerStatus(idCallerServer, Constants.ServerStatus.GLOBAL_SYNCHING);

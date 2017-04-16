@@ -143,7 +143,7 @@ public class RequestAddServer extends ManagementOp{
 
 		while(trial < Variables.getRetryNumber()){
 			
-			/* retrieve each time the (possible) new activeServerLit ( HeartBit updates it continuosly ) */		
+			/* retrieve each time the (possible) new activeServerLit ( Heartbeat updates it continuosly ) */		
 			Iterator<Server> i = serverList.iterator();
 
 			try {

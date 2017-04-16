@@ -183,7 +183,7 @@ public class SynchGroup extends ManagementOp{
 			long myIdConsRun = SystemEnvironment.Variables.consensusVariableManager.getConsVariables(groupId).getIdConsRun();
 
 			PadFsLogger.log(PadFsLogger.LogLevel.DEBUG, "groupSynch trial number "+ trial,"White","yellow",true);
-			/* retrieve each time the (possible) new activeServerLit ( HeartBit updates it continuosly ) */
+			/* retrieve each time the (possible) new activeServerLit ( Heartbeat updates it continuosly ) */
 			List<Server> l  = SqlManager.getServerListConsGroup(groupId);
 			PadFsLogger.log(PadFsLogger.LogLevel.DEBUG, "number of possible servers FOR groupSynch: "+l.size(),"White","yellow",true);
 			Iterator<Server> i = l.iterator();

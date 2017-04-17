@@ -23,11 +23,11 @@ public class Padfs {
 	private static PriorityBlockingQueue<JobOperation> inConsOp;
 	public static PriorityBlockingQueue<JobOperation> inOp;
 	private static BlockingQueue<JobOperation> outConsOp;
-	
-	static PriorityQueueComparator pqc = new PriorityQueueComparator();
-	
 
-	
+	static PriorityQueueComparator pqc = new PriorityQueueComparator();
+
+
+
 	/**
 	 * The method init all the queue and the threads of the server
 	 * @param confPath the path of the configuration file
@@ -36,7 +36,7 @@ public class Padfs {
 		PadFsLogger p = new PadFsLogger();
 		p.setName("PadFsLogger");
 		p.start();
-		
+
 		// READ ConfigFile
 
 		if(!ConfigurationManager.setSystemEnviroment(confPath)){
@@ -51,25 +51,25 @@ public class Padfs {
 		system.logger.PadFsLogger.log(LogLevel.CONFIG, "*********   INIT PHASE   *********");
 
 		//DB START
-		if(!SqlManager.open()){		
+		if(!SqlManager.open()){
 			system.logger.PadFsLogger.log(LogLevel.FATAL, "failed initializing DB");
 		}
-		
-		
-		
-				
+
+
+
+
 		//INIT BlockingQueue
 		inConsMsg = new LinkedBlockingQueue<JobConsMsg<?>>(Constants.queueCapacity);
 		inConsOp  = new PriorityBlockingQueue<JobOperation>(10,pqc);
 		inOp 	  = new PriorityBlockingQueue<JobOperation>(10,pqc);
 		outConsOp = new LinkedBlockingQueue<JobOperation>();
 
-		
-		
+
+
 		Variables.setCompleteOpQueue(outConsOp);
 		Variables.setPrepareOpQueue(inOp);
-	
-		System.setProperty("http.maxConnections", Constants.maxConnections); 
+
+		System.setProperty("http.maxConnections", Constants.maxConnections);
 
 		//INIT REST IN
 		system.logger.PadFsLogger.log(LogLevel.CONFIG, "- INIT REST");
@@ -79,8 +79,8 @@ public class Padfs {
 			system.logger.PadFsLogger.log(LogLevel.ERROR, "SERVER TOMCAT START - PORT NOT FREE - "+ e.getClass().getName() + ": " + e.getMessage());
 			System.exit(-2);
 		}
-		
-		
+
+
 		if(Variables.getServerId() == null && SqlManager.getServerList().size() > 0){
 			/* retrieve the id from the DB only if the "servers" table is not empty and we have not an id specified in the config file */
 			Long oldServerId = SqlManager.retrieveOldIdFromDB();
@@ -89,47 +89,47 @@ public class Padfs {
 			}
 			Variables.setServerId(oldServerId);
 		}
-		 
+
 		//create the Merkle Tree
 		Variables.setMerkleTree(SqlManager.generateMerkleTreeFromDB());
-		
-		
+
+
 		//PREPARE OP. TH
 		system.logger.PadFsLogger.log(LogLevel.DEBUG, "- PREPARE OP. TH");
 		PrepareOp po = new PrepareOp( inOp, inConsOp );
 		po.setName("PrepareOp");
-		
-		//CONSENSUS 
+
+		//CONSENSUS
 		system.logger.PadFsLogger.log(LogLevel.DEBUG, "- CONSENSUS OP. TH");
 		Consensus cn = new Consensus( inConsOp, inConsMsg, outConsOp );
 		cn.setName("Consensus");
-		
+
 		//COMPLETEOP
 		system.logger.PadFsLogger.log(LogLevel.DEBUG, "- COMPLETEOP TH");
 		CompleteOp co = new CompleteOp( outConsOp );
 		co.setName("CompleteOp");
-		
+
 		system.logger.PadFsLogger.log(LogLevel.DEBUG, "- HEARTBEAT TH");
 		Heartbeat hb = new Heartbeat();
 		hb.setName("Heartbeat");
-		
-		
+
+
 		system.logger.PadFsLogger.log(LogLevel.DEBUG, "- FileManager TH");
 		FileManager fm = new FileManager(inOp);
 		fm.setName("FileManager");
-		
-		
+
+
 		system.logger.PadFsLogger.log(LogLevel.DEBUG, "- GarbageCollector TH");
 		GarbageCollector gc = new GarbageCollector();
 		gc.setName("GarbageCollector");
-		
+
 		Shutdown shutdown = new Shutdown();
 		shutdown.setName("Shutdown");
-				
+
 
 		//add exit hook
 		Runtime.getRuntime().addShutdownHook(shutdown);
-		
+
 		system.logger.PadFsLogger.log(LogLevel.INFO, "- START INITIAL THREADS");
 		po.start();
 		cn.start();
@@ -140,17 +140,17 @@ public class Padfs {
 		int tries = 0;
 		while(!	Variables.getIAmInTheNet() && Variables.getExitingState() == false){
 			tries++;
-			
+
 			//try to start the network
 			PadFsLogger.log(LogLevel.INFO, "BootNet attempt number "+(tries), "WHITE", "YELLOW", true);
-			
+
 			result = RestServer.bootNet(Variables.getServerList());
 			if(result == false){
 				system.logger.PadFsLogger.log(LogLevel.INFO, "Bootnet failed. waiting...");
 				//break;
 			}
-				
-				
+
+
 			//wait before retry
 			do{
 				try {
@@ -163,16 +163,16 @@ public class Padfs {
 
 		}
 
-		
+
 		if(Variables.getIAmInTheNet()){
 
 			system.logger.PadFsLogger.log(LogLevel.DEBUG, "- STARTING INDEPENDENT THREADS");
-			
+
 			Variables.addOutOfFLowThread(hb);
 			hb.start();//start the hearbit thread after i'm in the net
-			
+
 			Variables.addOutOfFLowThread(fm);
-			fm.start();			
+			fm.start();
 
 			Variables.addOutOfFLowThread(gc);
 			gc.start();
@@ -209,13 +209,13 @@ public class Padfs {
 	 */
 	private static boolean checkConfFile( String confPath ){
 		File f = new File(confPath);
-		if(f.exists() && !f.isDirectory()) { 
+		if(f.exists() && !f.isDirectory()) {
 			return true;
 		}else{
 			return false;
 		}
 	}
-	
+
 	/**
 	 * Check if the array of strings as parameter fill the condiction of validity
 	 * @param str Array of string elements to check
@@ -230,44 +230,29 @@ public class Padfs {
 			if( s == null || s.equals("") || s.equals(null) ){
 	    		return false;
 	    	}
-		}		
+		}
 		return true;
 	}
-	
-
 
 	/**
-	 * The method that allow to terminate the program 
+	 * The method that allow to terminate the program
 	 */
 	public static void harakiri() {
-		System.exit(1);		
+		System.exit(1);
 	}
-	
-	
-	
-	
-	
-	
-	public static void main(String[] args) {		
-		
-		
+
+	public static void main(String[] args) {
 		System.out.println(" - - -  PADFS  - - -");
 		if (args.length > 0) {
 			if(checkConfFile(args[0])){
 				init(args[0]);
-				
-				//TEST MOVE FILE TMP -> FS 	LocalFS.mv2FS("doc.txt", "3");				
-				//TEST PING SERVER          System.out.println("TEST PING : "+RestServer.checkServer("*","192.168.1.252", 3000));
-				
 			}else{
-				system.logger.PadFsLogger.log(LogLevel.FATAL, "CONFIG FILE NOT FOUND");
+				System.err.println("CONFIG FILE NOT FOUND");
 			}
-		}else{
-			system.logger.PadFsLogger.log(LogLevel.FATAL, "NO ARGUMENT CONFIG FILE");
-		}	
-		
-		
+		}else {
+			System.err.println("NO ARGUMENT CONFIG FILE");
+		}
 	}
-	
-	
+
+
 }

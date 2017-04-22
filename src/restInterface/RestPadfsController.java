@@ -771,7 +771,7 @@ public class RestPadfsController {
 				+ createBootstrapInputForm("text","Path","path","path")
 				+ createBootstrapInputForm("text","* Name","name","name")
 				+ createBootstrapInputForm("text","Username","user","user")
-				+ createBootstrapInputForm("text","Password","password","password")
+				+ createBootstrapInputForm("password","Password","password","password")
 				+ "* : optional elements"
 				+ createButtonForm("success","UPLOAD")
 				+ "</form></center>\n");
@@ -2195,6 +2195,10 @@ public class RestPadfsController {
 
 		l.put("Make Query",				"/query/");
 		l.put("ALL Sys. Variables",	"/systemVariables/"+panelPass+"/");
+		//	l.put("go to maintenance state",	"/goToMaintenance/"+panelPass+"/");
+		//	l.put("exit maintenance state",	"/exitMaintenance/"+panelPass+"/");
+			l.put("go to maintenance state",	"/intermediatePage/10/");
+			l.put("exit maintenance state",	"/intermediatePage/11/");
 
 		l.put("Upload File",		"/put/");
 		l.put("Get file",			"/intermediatePage/1/");
@@ -2239,10 +2243,14 @@ public class RestPadfsController {
 	public String createBootstrapInputForm(String type, String label,  String id, String formName){
 		String spanStyle = "style=\"width:150px; text-align:left;\"";
 		String inputStyle = "style=\"width:400px; text-align:left;\"";
-		return "<div class=\"input-group\">\n" +
-				"  <span class=\"input-group-addon\" "+spanStyle+" id=\"basic-addon1\">"+label+"</span>\n" +
-				"  <input type=\""+type+"\" "+inputStyle+" class=\"form-control\" name=\""+formName+"\" id=\""+id+"\" aria-describedby=\"basic-addon1\">\n" +
-				"</div>\n";
+		if(!type.equals("hidden")){
+			return "<div class=\"input-group\">\n" +
+					"  <span class=\"input-group-addon\" "+spanStyle+" id=\"basic-addon1\">"+label+"</span>\n" +
+					"  <input type=\""+type+"\" "+inputStyle+" class=\"form-control\" name=\""+formName+"\" id=\""+id+"\" aria-describedby=\"basic-addon1\">\n" +
+					"</div>\n";
+		}else{
+			return "<input type=\""+type+"\" "+inputStyle+" class=\"form-control\" name=\""+formName+"\" id=\""+id+"\" aria-describedby=\"basic-addon1\">\n";
+		}
 	}
 
 	public String createLinkTitleForm(String title){
@@ -2382,6 +2390,22 @@ public class RestPadfsController {
 								createButtonForm("success","CHANGE")
 				);
 				break;
+			case 10: // /goToMaintenance/{panelPassword}/
+				str.append(createLinkTitleForm("Go to Maintenance State"));
+				str.append("<form action=\"#\" method=\"POST\" onSubmit='return submitLocalJSON(\"/redirectIntermediatePage/10/\",\"0\")'><table>");
+				str.append(
+						createBootstrapInputForm("hidden","gotomaintenance","gotomaintenance","gotomaintenance")+
+						createButtonForm("submit","Go To Mainenance")
+				);
+				break;
+			case 11: // /exitMaintenance/{panelPassword}/
+				str.append(createLinkTitleForm("Exit Maintenance State"));
+				str.append("<form action=\"#\" method=\"POST\" onSubmit='return submitLocalJSON(\"/redirectIntermediatePage/11/\",\"0\")'><table>");
+				str.append(
+						createBootstrapInputForm("hidden","exitmaintenance","exitmaintenance","exitmaintenance")+
+						createButtonForm("submit","Exit Mainenance")
+				);
+				break;
 		}
 		str.append("</form></center>\n");
 		return str.toString();
@@ -2461,6 +2485,12 @@ public class RestPadfsController {
 				path 			= allRequestParams.get("path");
 				redirect 		= "/chmod/"+user+"/"+password+"/"+usernameTarget+"/"+permission+"/"+usernameOwner+"/"+path+"/";
 				break;
+			case 10: // /goToMaintenance/{panelPassword}/
+				redirect 		= "/goToMaintenance/"+panelPass+"/";
+				break;
+			case 11: // /exitMaintenance/{panelPassword}/
+				redirect 		= "/exitMaintenance/"+panelPass+"/";
+				break;
 		}
 		redirect = SystemEnvironment.normalizePath(redirect)+"/";
 		PadFsLogger.log(LogLevel.DEBUG,"REDIRECT URL:"+redirect,"white","red",true);
@@ -2504,9 +2534,16 @@ public class RestPadfsController {
 		for(int i=0; i<serverList.size(); i++){
 			Server server = serverList.get(i);
 			String url = RestInterface.GetListSharedWith.generateUrl(server.getIp(),server.getPort(), username );
-			response = restTemplate.exchange(url, HttpMethod.GET, null, RestGetListSharedWith.class);
 			
-			if(response.getBody()!=null) {
+			try{
+				response = restTemplate.exchange(url, HttpMethod.GET, null, RestGetListSharedWith.class);
+			}
+			catch(Exception e){
+				PadFsLogger.log(LogLevel.WARNING,"cannot communicate with: id:"+server.getId()+" ip:"+server.getIp()+" port:"+server.getPort());
+				response = null;
+			}
+			
+			if(response != null && response.getBody()!=null) {
 				Iterator<MetaInfo> files = (response.getBody()).getFileList().iterator();
 				while (files.hasNext()) {
 					MetaInfo currentFile = files.next();
@@ -2733,7 +2770,7 @@ public class RestPadfsController {
 	@RequestMapping(value={
 			RestInterface.GoToMaintenance.path,
 			RestInterface.GoToMaintenance.path+"/"
-	}, method = RequestMethod.GET)
+	}, method = { RequestMethod.GET, RequestMethod.POST })
     public static @ResponseBody DeferredResult<RestMaintenanceRequest> goToMaintenance(
     		@PathVariable("password") String serverPassword,
     		HttpServletRequest request){
@@ -2757,7 +2794,7 @@ public class RestPadfsController {
 	@RequestMapping(value={
 			RestInterface.ExitMaintenance.path,
 			RestInterface.ExitMaintenance.path+"/"
-	}, method = RequestMethod.GET)
+	}, method = { RequestMethod.GET, RequestMethod.POST })
     public static @ResponseBody DeferredResult<RestExitMaintenance> exitMaintenance(
     		@PathVariable("password") String serverPassword,
     		HttpServletRequest request){

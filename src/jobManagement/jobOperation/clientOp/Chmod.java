@@ -48,7 +48,7 @@ public class Chmod extends JobClientOp{
 				 String usernameTarget,
 				 Permission permission){
 		super(username,password,usernameOwner,path,OperationPriority.CHMOD);
-		PadFsLogger.log(LogLevel.ERROR, "path is: "+path+ "  owner is:"+usernameOwner+"  label is:"+getServerLabel());
+		PadFsLogger.log(LogLevel.DEBUG, "path is: "+path+ "  owner is:"+usernameOwner+"  label is:"+getServerLabel());
 		this.defResultMsg = defResultMsg;
 		this.permission = permission;
 		this.usernameTarget = usernameTarget;

@@ -1,6 +1,7 @@
 [workflow]: img/workflow.png "padfs workflow"
 [database]: img/databaseSchema.png "padfs database"
 
+
 [authors]: #authors
 [introduction]: #introduction
 [build]: #build-and-run-project
@@ -49,6 +50,24 @@ Build and run project
 1. mvn package
 2. java -jar padfs-0.1-developer.jar config.xml
 ```
+
+Screenshot
+======
+Admin interface directory creation: <br>
+<center><img src="img/admin_mkdir.png" alt="admin interface mkdir operation" width="300"></center>
+<br>
+
+Admin interface modify permission: <br>
+<center><img src="img/admin_chmod.png" alt="Admin interface modify permission" width="300"></center>
+<br>
+
+Admin interface upload file: <br>
+<center><img src="img/admin_upload.png" alt="Admin interface upload file" width="300"></center>
+<br>
+
+User interface download file: <br>
+<center><img src="img/user_get.png" alt="user interface get operation" width="300"></center>
+<br>
 
 Configuration file
 ======
